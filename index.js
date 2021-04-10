@@ -1,7 +1,63 @@
-new CountdownTimer({
-  selector: '#timer-1',
-  targetDate: new Date('Jul 17, 2019'),
-});
+class CountdownTimer {
+  constructor(selector, targetDate) {
+    this.element = document.querySelector(selector);
+    this.targetDate = targetDate;
+  }
+
+  getDays() {
+    const days = Math.floor(this.targetDate / (1000 * 60 * 60 * 24));
+    return transformValues(days);
+  }
+
+  getHours() {
+    const hours = Math.floor((this.targetDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return transformValues(hours);
+  }
+
+  getMinutes() {
+    const mins = Math.floor((this.targetDate % (1000 * 60 * 60)) / (1000 * 60));
+    return transformValues(mins); 
+  }
+
+  getSeconds() {
+   const secs = Math.floor((this.targetDate % (1000 * 60)) / 1000);
+   return transformValues(secs);
+  }
+
+  render() {
+    this.element.innerHTML = `
+    ${this.getDays()}
+    :${this.getHours()}
+    :${this.getMinutes()}
+    :${this.getSeconds()}
+    `;
+  }
+
+  init() {
+    const interval = setInterval(() => {
+      this.targetDate -= 1000;
+
+      if (this.targetDate <= 0) {
+        this.targetDate = 0;
+        clearInterval(interval);
+      }
+      this.render()
+    }, 1000);
+  }
+}
+
+function transformValues(value) {
+  return String(value).padStart(2, '0')
+}
+
+const targetDate = new Date('Jul 17, 2021')
+const timer = new CountdownTimer('.test', targetDate - new Date);
+timer.init()
+
+// new CountdownTimer({
+//   selector: '#timer-1',
+//   targetDate: new Date('Jul 17, 2019'),
+// });
 
 
 /*
